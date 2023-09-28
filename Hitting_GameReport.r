@@ -14,6 +14,11 @@ date <- <DATE>
 file <- paste0(date,"-<FieldName>-Private-1_unverified.csv")
 df <- read.csv(file)
 
+#MLB Statcast Strike Zone
+min_plate_x <- -0.83
+max_plate_x <- 0.83
+max_plate_z <- 3.92
+min_plate_z <- 1.17
 
 #Wall Position SetUp
 wall_pos_1 = sin(acos(330/375))*375
