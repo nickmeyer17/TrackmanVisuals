@@ -1,4 +1,4 @@
-setwd(<LOCAL DIRECTORY>)
+directory <- setwd(<LOCAL DIRECTORY>)
 library(knitr)
 library(kableExtra)
 library(tidyverse)
@@ -8,6 +8,7 @@ library(gridExtra)
 library(dplyr)
 library(grid)
 library(gridExtra)
+library(googledrive)
 
 
 date <- 20230923
@@ -20,6 +21,9 @@ min_plate_x <- -0.83
 max_plate_x <- 0.83
 max_plate_z <- 3.92
 min_plate_z <- 1.17
+
+
+
 
 df <- df %>%
   mutate(is_strike = ifelse(PitchCall %in% c("StrikeCalled", "InPlay", "StrikeSwinging", "FoulBall"), TRUE, FALSE),
