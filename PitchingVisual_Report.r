@@ -15,7 +15,11 @@ file <- paste0(date,"-<StadiumName>-Private-1_unverified.csv")
 df <- read.csv(file)
 str(df)
 
-
+#MLB Statcast Strike Zone
+min_plate_x <- -0.83
+max_plate_x <- 0.83
+max_plate_z <- 3.92
+min_plate_z <- 1.17
 
 df <- df %>%
   mutate(is_strike = ifelse(PitchCall %in% c("StrikeCalled", "InPlay", "StrikeSwinging", "FoulBall"), TRUE, FALSE),
