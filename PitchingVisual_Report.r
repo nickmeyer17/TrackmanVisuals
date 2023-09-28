@@ -10,8 +10,8 @@ library(grid)
 library(gridExtra)
 
 
-date <- <DATE>
-file <- paste0(date,"-<StadiumName>-Private-1_unverified.csv")
+date <- 20230923
+file <- paste0(date,"-<FieldName>-Private-1_unverified.csv")
 df <- read.csv(file)
 str(df)
 
@@ -31,6 +31,8 @@ df <- df %>% mutate(
     HB = c(HorzBreak),
     IVB = c(InducedVertBreak)
 )
+
+df <- filter(df, PitcherTeam %in% c(<TEAM>))
 str(df)
 
 # Group the data by PitchType
@@ -58,7 +60,7 @@ for (pitcher_id in unique(df$Pitcher)) {
   
   # Create the ggplot for PitchType by IVB and HB
   plot1 <- ggplot(filtered_data, aes(x = HB, y = IVB, color = TaggedPitchType)) +
-    geom_point() +
+    geom_point(size = 2) +
     labs(title = "Pitch Movement") +
     xlim(-25, 25) +
     ylim(-25, 25) +
@@ -68,16 +70,16 @@ for (pitcher_id in unique(df$Pitcher)) {
 
   # Create the ggplot for ReleasePositionX and ReleasePositionZ
   plot2 <- ggplot(filtered_data, aes(x = RelSide, y = RelHeight, color = TaggedPitchType)) +
-    geom_point() +
+    geom_point(size = 2) +
     labs(title = "Release Point") +
     geom_segment(aes(x = -1, xend = 1, y = 10/12, yend = 10/12), color = "black")+
     xlim(-4, 4) +
     ylim(0, 8)+
     scale_color_manual(values = c("Fastball" = "#FF0000", "Curveball" = "#0000FF", "Slider" = "#33CC33", "ChangeUp"= "#FF6600", "Sinker" = "#330033", "Spliter" = "#00CCFF", "Cutter" = "#CC0099", "Knuckelball" = "#FFFF00", "Other" = "#003300", "Undefined" = "#333333"))
 
-plot3 <- ggplot(filtered_data, aes(x = RelSide, y = RelHeight, color = TaggedPitchType)) +
-    geom_point() +
-    labs(title = "Release Point") +
+plot3 <- ggplot(filtered_data, aes(x = PlateLocSide, y = PlateLocHeight, color = TaggedPitchType)) +
+    geom_point(size = 5) +
+    labs(title = "Pitch Locations, Pitcher's View") +
     geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = max_plate_z, yend = max_plate_z), color = "black")+
     geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
     geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
