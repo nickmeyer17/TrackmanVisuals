@@ -10,8 +10,8 @@ library(dplyr)
 library(grid)
 library(gridExtra)
 
-date <- <DATE>
-file <- paste0(date,"-<FieldName>-Private-1_unverified.csv")
+date <- 20230923
+file <- paste0(date,"-<FieldName-1_unverified.csv")
 df <- read.csv(file)
 
 #MLB Statcast Strike Zone
@@ -35,7 +35,7 @@ y <- origin_x + radius * sin(theta)
 curve_data <- data.frame(x = x, y = y)
 
 #Filter data to swings
-df <- filter(df, BatterTeam %in% c("DAY_FLY"))
+df <- filter(df, BatterTeam %in% c(<TEAM>))
 df <- filter(df, PitchCall %in% c("StrikeSwinging", "Foul", "InPlay"))
 df <- df %>% mutate(angle = (Bearing + 45)*(pi/180))
 df <- df %>% mutate(ypos = Distance*cos(angle), xpos = Distance*sin(angle))
@@ -65,7 +65,7 @@ for(batter in unique(df$Batter)){
         Bearing = round(mean(Bearing, na.rm = TRUE,2))
     )
     spray <- ggplot(pf, aes(x = xpos, y = ypos, color = TaggedHitType)) +
-        geom_point()+
+        geom_point(size = 3)+
         labs(title = paste(batter,"Spray Chart"))
     spray <- spray +
         geom_segment(aes(x = 0, xend = 0, y = 0, yend = 330), color = "black")+
@@ -83,13 +83,15 @@ spray <- spray +
   geom_path(data = curve_data, aes(x, y), color = "black")
 spray <- spray + coord_fixed(ratio = 1)
 
-plot1 <- ggplot(pf, aes(x = PlateLocSide, y = PlateLocHeight, color = TaggedPitchType))+geom_point()+
+plot1 <- ggplot(pf, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = TaggedPitchType))+geom_point(size = 5)+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = max_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  scale_color_manual(values = c("Fastball" = "#FF0000", "Curveball" = "#0000FF", "Slider" = "#33CC33", "ChangeUp"= "#FF6600", "Sinker" = "#330033", "Spliter" = "#00CCFF", "Cutter" = "#CC0099", "Knuckelball" = "#FFFF00", "Other" = "#003300", "Undefined" = "#333333"))+
- labs(title = paste("Swings for", batter))+
+ labs(title = paste("Swings for", batter), x)+
+ xlab("Hitter's View")+
+ ylab(" ")+
     xlim(-3, 3)+
     ylim(0, 6)
 plot1 <- plot1 + coord_fixed(ratio = 1)
