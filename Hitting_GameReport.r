@@ -33,7 +33,7 @@ curve_data <- data.frame(x = x, y = y)
 df <- filter(df, BatterTeam %in% c("DAY_FLY"))
 df <- filter(df, PitchCall %in% c("StrikeSwinging", "Foul", "InPlay"))
 df <- df %>% mutate(angle = (Bearing + 45)*(pi/180))
-df <- df %>% mutate(xpos = Distance*cos(angle), ypos = Distance*sin(angle))
+df <- df %>% mutate(ypos = Distance*cos(angle), xpos = Distance*sin(angle))
 
 
 str(df)
