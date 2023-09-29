@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 Cluster_FTP_User = os.getenv('Cluster_FTP_User')
 Cluster_FTP_Password = os.getenv('Cluster_FTP_Password')
 Cluster_LocalDirectory = os.getenv('Cluster_LocalDirectory')
-Cluster_OutputPath = os.getenv('Cluster_OutputPath')
+Cluster_UmpireScript = os.getenv('Cluster_UmpireScripts')
 
 # FTP configuration
 ftp_server = "ftp.trackman.com"

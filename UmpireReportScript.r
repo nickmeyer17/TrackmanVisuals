@@ -8,8 +8,10 @@ library(dplyr)
 library(grid)
 library(gridExtra)
 
+Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
+Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 #Set Working Directory to Local, This is where the output .pdf will save to
-setwd(Cluseter_LocalDirectory)
+setwd(Cluster_LocalDirectory)
 
 
 # Get the current system date
@@ -19,7 +21,8 @@ current_date <- Sys.Date()
 previous_date <- current_date - 1
 
 # Format the previous date as YYYYMMDD
-date <- format(previous_date, "%Y%m%d")
+#date <- format(previous_date, "%Y%m%d")
+date <- 20230923
 field <- paste("-", Cluster_FieldName,"-Private-1_unverified.csv")
 file <- paste0(date, field)
 df <- read.csv(file)
