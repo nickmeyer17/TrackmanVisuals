@@ -79,6 +79,7 @@ for (pitcher_id in unique(df$Pitcher)) {
     geom_segment(aes(x = -1, xend = 1, y = 10/12, yend = 10/12), color = "black")+
     xlim(-4, 4) +
     ylim(0, 8)+
+    xlaB("Centerfield View")+
     scale_color_manual(values = c("Fastball" = "#FF0000", "Curveball" = "#0000FF", "Slider" = "#33CC33", "ChangeUp"= "#FF6600", "Sinker" = "#330033", "Spliter" = "#00CCFF", "Cutter" = "#CC0099", "Knuckelball" = "#FFFF00", "Other" = "#003300", "Undefined" = "#333333"))
 
 plot3 <- ggplot(filtered_data, aes(x = PlateLocSide, y = PlateLocHeight, color = TaggedPitchType)) +
@@ -90,6 +91,7 @@ plot3 <- ggplot(filtered_data, aes(x = PlateLocSide, y = PlateLocHeight, color =
     geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
     xlim(-3, 3) +
     ylim(-2, 6)+
+    xlab("Pitcher View")+
     scale_color_manual(values = c("Fastball" = "#FF0000", "Curveball" = "#0000FF", "Slider" = "#33CC33", "ChangeUp"= "#FF6600", "Sinker" = "#330033", "Spliter" = "#00CCFF", "Cutter" = "#CC0099", "Knuckelball" = "#FFFF00", "Other" = "#003300", "Undefined" = "#333333"))
 
 
