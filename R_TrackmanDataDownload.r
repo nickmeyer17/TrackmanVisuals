@@ -2,11 +2,11 @@ library(RCurl)
 library(cronR)
 
 # FTP configuration
-ftp_url <- "ftp://Dayton:BpqlbO@Rqd@ftp.trackman.com"
+ftp_url <- "ftp://Username:Password@ftp.trackman.com"
 ftp_folder <- "v3/YYYY/MM/DD"  # Replace YYYY, MM, and DD with the appropriate date
 
 # Local folder to save downloaded files
-local_download_folder <- "C:/Users/nickm/Downloads/TrackmanTests"
+local_download_folder <- "local directory"
 
 # Function to download files from FTP
 download_files <- function() {
