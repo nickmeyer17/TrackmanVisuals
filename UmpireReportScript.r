@@ -9,12 +9,19 @@ library(grid)
 library(gridExtra)
 
 #Set Working Directory to Local, This is where the output .pdf will save to
-setwd(Local Directory)
+setwd(Cluseter_LocalDirectory)
 
-#INPUT DATE BELOW IN YYYYMMDD FORMAT
-date <- "DATE"
-file <- paste0(date,"-<FieldName>-Private-1_unverified.csv")
-file
+
+# Get the current system date
+current_date <- Sys.Date()
+
+# Determine the previous day's date
+previous_date <- current_date - 1
+
+# Format the previous date as YYYYMMDD
+date <- format(previous_date, "%Y%m%d")
+field <- paste("-", Cluster_Field,"-Private-1_unverified.csv")
+file <- paste0(date, field)
 df <- read.csv(file)
 str(df)
 

@@ -1,0 +1,20 @@
+---
+title: "Leaderboard"
+output: pdf_document
+params:
+  leaderboard_data: NA
+---
+
+# Leaderboard
+
+```{r echo=FALSE, results='asis'}
+# Check if leaderboard_data is provided
+if (!is.na(params$leaderboard_data)) {
+  # Load the data
+  data <- params$leaderboard_data
+  
+  # Create a table
+  knitr::kable(data, caption = "Leaderboard", format = "latex")
+} else {
+  cat("No data provided for the leaderboard.")
+}
