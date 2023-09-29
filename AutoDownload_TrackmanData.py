@@ -6,6 +6,11 @@ import schedule
 import subprocess
 from datetime import datetime, timedelta
 
+Cluster_FTP_User = os.getenv('Cluster_FTP_User')
+Cluster_FTP_Password = os.getenv('Cluster_FTP_Password')
+Cluster_LocalDirectory = os.getenv('Cluster_LocalDirectory')
+Cluster_OutputPath = os.getenv('Cluster_OutputPath')
+
 # FTP configuration
 ftp_server = "ftp.trackman.com"
 ftp_user = Cluster_FTP_User
@@ -46,7 +51,7 @@ def download_files():
         print("Files downloaded successfully.")
 
         # Run the R script
-        r_script_path = "C:/Users/nickm/TrackmanVisuals/UmpireReportScript.r"
+        r_script_path = Cluster_OutputPath
         subprocess.run(["Rscript", r_script_path])
 
     except Exception as e:

@@ -20,7 +20,7 @@ previous_date <- current_date - 1
 
 # Format the previous date as YYYYMMDD
 date <- format(previous_date, "%Y%m%d")
-field <- paste("-", Cluster_Field,"-Private-1_unverified.csv")
+field <- paste("-", Cluster_FieldName,"-Private-1_unverified.csv")
 file <- paste0(date, field)
 df <- read.csv(file)
 str(df)
