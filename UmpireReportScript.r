@@ -7,12 +7,17 @@ library(gridExtra)
 library(dplyr)
 library(grid)
 library(gridExtra)
+library(googlesheets4)
+library(googledrive)
 
 Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
 Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
+Cluster_UmpireDrive_API_Path <- Sys.getenv("Cluster_UmpireDrive_API_Path")
 #Set Working Directory to Local, This is where the output .pdf will save to
 setwd(Cluster_LocalDirectory)
 
+# Replace 'path/to/your/client_secret.json' with the actual path to your JSON file
+drive_auth(path = Cluster_UmpireDrive_API_Path, cache = TRUE)
 
 # Get the current system date
 current_date <- Sys.Date()
