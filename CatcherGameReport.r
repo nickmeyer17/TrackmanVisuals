@@ -8,12 +8,15 @@ library(dplyr)
 library(grid)
 library(gridExtra)
 
+Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
+Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
+
 #Set Working Directory to Local, This is where the output .pdf will save to
-setwd(<LOCAL DIRECTROY>)
+setwd(Cluster_LocalDirectory)
 
 #INPUT DATE BELOW IN YYYYMMDD FORMAT
 date <- <DATE>
-file <- paste0(date,"-<FieldName>-Private-1_unverified.csv")
+file <- paste0(date, Cluster_FieldName)
 sf <- read.csv(file)
 
 
@@ -29,13 +32,18 @@ sf <- filter(sf, PitchCall %in% c("BallCalled", "StrikeCalled"))
 for(catcher in unique(sf$Catcher)){
     filtered_data <- sf %>% filter(catcher == Catcher)
     
-plot1 <- ggplot(filtered_data, aes(x = PlateLocSide, y = PlateLocHeight, color = PitchCall))+geom_point()+
+plot1 <- ggplot(filtered_data, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = PitchCall))+geom_point()+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = max_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
- labs(title = paste("Game Total Calls for", catcher))+
+ labs(title = paste("Game Total Calls for", catcher, "(Catcher View)"))+
     xlim(-3, 3)+
     ylim(0, 6)
 
@@ -54,13 +62,18 @@ for(pitch_type in unique(filtered_data$TaggedPitchType)){
    type <- filtered_data %>% filter(TaggedPitchType == pitch_type)
  for(pitcher_hand in unique(type$PitcherThrows)){
  hand <- filtered_data %>% filter(PitcherThrows == pitcher_hand)
- plot4 <- ggplot(hand, aes(x = PlateLocSide, y = PlateLocHeight, color = PitchCall))+geom_point()+
+ plot4 <- ggplot(hand, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = PitchCall))+geom_point()+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = max_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
- labs(title = paste("Called pitches with", pitcher_hand, "Handed Pitchers", pitch_type, "for", catcher))+
+ labs(title = paste("Called pitches with", pitcher_hand, "Handed Pitchers", pitch_type, "for", catcher, "(Catcher View)"))+
     xlim(-3, 3)+
     ylim(0, 6)
 
@@ -68,13 +81,18 @@ for(pitch_type in unique(filtered_data$TaggedPitchType)){
  }
   for(batter_hand in unique(filtered_data$BatterSide)){
     data <- filtered_data %>% filter(BatterSide == batter_hand)
-    plot3 <- ggplot(data, aes(x = PlateLocSide, y = PlateLocHeight, color = PitchCall))+geom_point()+
+    plot3 <- ggplot(data, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = PitchCall))+geom_point()+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = max_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
- labs(title = paste("Called pitches with,", batter_hand, "Handed Hitters,", pitch_type, "for", catcher))+
+ labs(title = paste("Called pitches with,", batter_hand, "Handed Hitters,", pitch_type, "for", catcher, "(Catcher View)"))+
     xlim(-3, 3)+
     ylim(0, 6)
 

@@ -1,5 +1,3 @@
-setwd(<LOCAL DIRECTORY>)
-
 library(knitr)
 library(kableExtra)
 library(tidyverse)
@@ -10,8 +8,13 @@ library(dplyr)
 library(grid)
 library(gridExtra)
 
-date <- 20230923
-file <- paste0(date,"-<FieldName-1_unverified.csv")
+
+Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
+Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
+
+setwd(Cluster_LocalDirectory)
+date <- <DATE>
+file <- paste0(date, Cluster_FieldName)
 df <- read.csv(file)
 
 #MLB Statcast Strike Zone
@@ -88,6 +91,11 @@ plot1 <- ggplot(pf, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = TaggedP
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("Fastball" = "#FF0000", "Curveball" = "#0000FF", "Slider" = "#33CC33", "ChangeUp"= "#FF6600", "Sinker" = "#330033", "Spliter" = "#00CCFF", "Cutter" = "#CC0099", "Knuckelball" = "#FFFF00", "Other" = "#003300", "Undefined" = "#333333"))+
  labs(title = paste("Swings for", batter), x)+
  xlab("Hitter's View")+

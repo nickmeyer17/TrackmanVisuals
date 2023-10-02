@@ -17,7 +17,7 @@ Cluster_UmpireDrive_API_Path <- Sys.getenv("Cluster_UmpireDrive_API_Path")
 setwd(Cluster_LocalDirectory)
 
 # Replace 'path/to/your/client_secret.json' with the actual path to your JSON file
-drive_auth(path = Cluster_UmpireDrive_API_Path, cache = TRUE)
+drive_auth_configure(path = Cluster_UmpireDrive_API_Path)
 
 # Get the current system date
 current_date <- Sys.Date()
@@ -46,6 +46,11 @@ plot1 <- ggplot(df, aes(x = -1 *PlateLocSide, y = PlateLocHeight, color = PitchC
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = "Game Total Calls, (Umpire View)")+
     xlim(-3, 3)+
@@ -62,6 +67,11 @@ for(team in unique(df$BatterTeam)){
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat, (Umpire View)"))+
     xlim(-3, 3)+
@@ -76,6 +86,11 @@ for(team in unique(df$BatterTeam)){
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat,", batter_hand, "Handed Hitters, (Umpire View)"))+
     xlim(-3, 3)+
@@ -92,14 +107,36 @@ for(team in unique(df$BatterTeam)){
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat,", pitcher_hand, "Handed Pitchers", pitch_type, "(Umpire View)"))+
     xlim(-3, 3)+
-    ylim(0, 6)
+    ylim(-1, 6)
 
  print(plot4)
+
+ # Replace 'path/to/your/pdf.pdf' with the actual path to your PDF file
+
  }
  }
 }
+
+#media_type <- "application/pdf"
+#pdf_path <- paste0(Cluster_LocalDirectory,"/", output_filename)
+#pdf_path
+#file_path <- pdf_path
+
+
+
+# Create a new folder or specify an existing folder in Google Drive where you want to upload the PDF
+#folder_id <- "Umpire Reports"
+
+# Upload the PDF file to Google Drive
+#drive_upload(file_path, name = output_filename, type = "application/pdf", folder = folder_id)
+
 
 dev.off()
