@@ -16,9 +16,12 @@ Cluster_UmpireDrive_API_Path <- Sys.getenv("Cluster_UmpireDrive_API_Path")
 #Set Working Directory to Local, This is where the output .pdf will save to
 setwd(Cluster_LocalDirectory)
 
-# Replace 'path/to/your/client_secret.json' with the actual path to your JSON file
-drive_auth_configure(path = Cluster_UmpireDrive_API_Path)
+# Configure the OAuth client
+#drive_auth_configure(client_id = client_id, client_secret = client_secret)
 
+# Authenticate with Google Drive
+drive_auth()
+2
 # Get the current system date
 current_date <- Sys.Date()
 
@@ -26,8 +29,7 @@ current_date <- Sys.Date()
 previous_date <- current_date - 1
 
 # Format the previous date as YYYYMMDD
-#date <- format(previous_date, "%Y%m%d")
-date <- 20230923
+date <- format(previous_date, "%Y%m%d")
 field <- paste0("-", Cluster_FieldName,"-Private-1_unverified.csv")
 file <- paste0(date, field)
 df <- read.csv(file)
@@ -119,24 +121,18 @@ for(team in unique(df$BatterTeam)){
 
  print(plot4)
 
- # Replace 'path/to/your/pdf.pdf' with the actual path to your PDF file
 
  }
  }
 }
-
-#media_type <- "application/pdf"
-#pdf_path <- paste0(Cluster_LocalDirectory,"/", output_filename)
-#pdf_path
-#file_path <- pdf_path
+dev.off()
 
 
+pdf_path <- paste0(Cluster_LocalDirectory,"/", output_filename)
+file_path <- pdf_path
 
 # Create a new folder or specify an existing folder in Google Drive where you want to upload the PDF
-#folder_id <- "Umpire Reports"
+folder_id <- "Umpire Reports"
 
 # Upload the PDF file to Google Drive
-#drive_upload(file_path, name = output_filename, type = "application/pdf", folder = folder_id)
-
-
-dev.off()
+drive_upload(media = file_path, name = output_filename, path = "Trackman_Reports/Umpire_Reports")

@@ -1,5 +1,3 @@
-!pip install schedule
-
 import os
 import ftplib
 import schedule
@@ -62,3 +60,4 @@ schedule.every().day.at("08:00").do(download_files)
 
 while True:
     schedule.run_pending()
+

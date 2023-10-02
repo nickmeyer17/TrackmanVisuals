@@ -2,11 +2,19 @@ library(RCurl)
 library(cronR)
 
 # FTP configuration
-ftp_url <- "ftp://Username:Password@ftp.trackman.com"
+Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
+Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
+Cluster_FTP_User <- Sys.getenv("Cluster_FTP_User")
+Cluster_FTP_Password <- Sys.getenv("Cluster_FTP_Password")
+Cluster_UmpireScript <- Sys.getenv("Cluster_UmpireScript")
+
+ulr <- paste0("ftp://", Cluster_FTP_User,":", Cluster_FTP_Password, "@ftp.trackman.com")
+
+ftp_url <- url
 ftp_folder <- "v3/YYYY/MM/DD"  # Replace YYYY, MM, and DD with the appropriate date
 
 # Local folder to save downloaded files
-local_download_folder <- "local directory"
+local_download_folder <- Cluster_LocalDirectory
 
 # Function to download files from FTP
 download_files <- function() {
@@ -35,9 +43,9 @@ download_files <- function() {
   cat("Files downloaded successfully.\n")
 
   # Run the R script
-  r_script_path <- "path/to/your/R/script.R"
+  r_script_path <- Cluster_UmpireScript
   source(r_script_path)
 }
 
 # Uncomment and run the following line if you want to test the download_files function
-# download_files()
+download_files()
