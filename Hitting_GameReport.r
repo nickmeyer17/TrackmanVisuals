@@ -14,10 +14,11 @@ Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
 Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 
 setwd(Cluster_LocalDirectory)
-date <- <DATE>
+date <- 20230923
 field <- paste0("-", Cluster_FieldName,"-Private-1_unverified.csv")
 file <- paste0(date, field)
 df <- read.csv(file)
+str(df)
 
 #MLB Statcast Strike Zone
 min_plate_x <- -0.83
@@ -40,7 +41,7 @@ y <- origin_x + radius * sin(theta)
 curve_data <- data.frame(x = x, y = y)
 
 #Filter data to swings
-df <- filter(df, BatterTeam %in% c(<TEAM>))
+#df <- filter(df, BatterTeam %in% c(<TEAM>))
 df <- filter(df, PitchCall %in% c("StrikeSwinging", "Foul", "InPlay"))
 df <- df %>% mutate(angle = (Bearing + 45)*(pi/180))
 df <- df %>% mutate(ypos = Distance*cos(angle), xpos = Distance*sin(angle))
@@ -53,7 +54,7 @@ for(batter in unique(df$Batter)){
     
     avg_stats <- pf %>% summarise(
         AvgExitVelo = round(mean(ExitSpeed, na.rm = TRUE), 2),
-        MaxEV = round(max(ExitSpeed, na.rm = TRUE)),
+        MaxEV = round(max(ExitSpeed, na.rm = TRUE),2),
         AvgLaunchAngle = round(mean(Angle, na.rm = TRUE), 2),
         AvgDistance = round(mean(Distance, na.rm = TRUE), 0),
         MaxDistance = round(max(Distance, na.rm = TRUE),2),
@@ -63,7 +64,7 @@ for(batter in unique(df$Batter)){
 
     stats <- pf %>% group_by(TaggedPitchType) %>% summarise(
         ExitVelo = round(mean(ExitSpeed, na.rm = TRUE), 2),
-        MaxEV = round(max(ExitSpeed, na.rm = TRUE)),
+        MaxEV = round(max(ExitSpeed, na.rm = TRUE), 2),
         LaunchAngle = round(mean(Angle, na.rm = TRUE), 2),
         Distance = round(mean(Distance, na.rm = TRUE), 0),
         MaxDistance = round(max(Distance, na.rm = TRUE),2),
@@ -103,10 +104,8 @@ plot1 <- ggplot(pf, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = TaggedP
  xlab("Hitter's View")+
  ylab(" ")+
     xlim(-3, 3)+
-    ylim(0, 6)
+    ylim(-1, 6)
 plot1 <- plot1 + coord_fixed(ratio = 1)
-
-
 
 plot2 <- ggplot(pf, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = ExitSpeed))+geom_point(size = 5)+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = max_plate_z, yend = max_plate_z), color = "black")+
@@ -118,12 +117,14 @@ plot2 <- ggplot(pf, aes(x = -1*PlateLocSide, y = PlateLocHeight, color = ExitSpe
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
  geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
- scale_color_gradient(color = brewer.pal(11, "RdBu"))+
+ scale_color_gradient2(low = "blue", mid = "white", high = "red")+
  labs(title = paste("Swings for", batter), x)+
  xlab("Hitter's View")+
  ylab(" ")+
     xlim(-3, 3)+
     ylim(0, 6)
+
+
 plot1 <- plot1 + coord_fixed(ratio = 1)
     # Customize color and size as needed
 
@@ -149,3 +150,6 @@ filename <- paste0(date, "_", name, "_HittingGameReport.pdf")
     
     dev.off()
 }
+
+
+

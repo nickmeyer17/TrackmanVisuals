@@ -1,4 +1,4 @@
-directory <- setwd(<LOCAL DIRECTORY>)
+
 library(knitr)
 library(kableExtra)
 library(tidyverse)
@@ -11,8 +11,13 @@ library(gridExtra)
 library(googledrive)
 
 
+
+
+Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
+Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
+directory <- setwd(Cluster_LocalDirectory)
 date <- 20230923
-file <- paste0(date,"-<FieldName>-Private-1_unverified.csv")
+file <- paste0(date,"-", Cluster_FieldName,"-Private-1_unverified.csv")
 df <- read.csv(file)
 str(df)
 
@@ -79,7 +84,7 @@ for (pitcher_id in unique(df$Pitcher)) {
     geom_segment(aes(x = -1, xend = 1, y = 10/12, yend = 10/12), color = "black")+
     xlim(-4, 4) +
     ylim(0, 8)+
-    xlaB("Centerfield View")+
+    xlab("Centerfield View")+
     scale_color_manual(values = c("Fastball" = "#FF0000", "Curveball" = "#0000FF", "Slider" = "#33CC33", "ChangeUp"= "#FF6600", "Sinker" = "#330033", "Spliter" = "#00CCFF", "Cutter" = "#CC0099", "Knuckelball" = "#FFFF00", "Other" = "#003300", "Undefined" = "#333333"))
 
 plot3 <- ggplot(filtered_data, aes(x = PlateLocSide, y = PlateLocHeight, color = TaggedPitchType)) +
