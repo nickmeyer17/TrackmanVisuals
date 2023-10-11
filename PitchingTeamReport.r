@@ -17,7 +17,7 @@ Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 
 
 directory <- setwd(Cluster_LocalDirectory)
-date <- 20230923
+date <- 20231008
 file <- paste0(date,"-", Cluster_FieldName,"-Private-1_unverified.csv")
 df <- read.csv(file)
 str(df)
@@ -30,7 +30,10 @@ df <- df %>% mutate(strike_count = Strikes + is_strike)
 first_pitch <- filter(df, PitchofPA == 1)
 #first_pitch <- first_pitch %>% mutate(fp_str = ifelse(PitchCall %in% c("StrikeCalled", "InPlay", "StrikeSwinging", "FoulBall"), TRUE, FALSE))
 
-strike_per <- df %>% group_by(Pitcher) %>% summarize(stike_per = round(mean(is_strike, na.rm = 1)*100, 1))
+first_pitch_strike <- paste("First Pitch Strike")
+strike_per <- paste("Strike %")
+
+strike_per <- df %>% group_by(Pitcher) %>% summarize(strike_percent = round(mean(is_strike, na.rm = 1)*100, 1))
 first_pitch <- first_pitch %>% group_by(Pitcher) %>% summarize(first_pitch_strike = round(mean(is_strike, na.rm = 1)*100, 1))
 stats <- merge(strike_per, first_pitch, by = "Pitcher")
 
@@ -66,7 +69,9 @@ f3_obp <- data %>% group_by(Pitcher) %>% summarize(
 stats <- merge(stats, f3_obp, by = "Pitcher")
 
 output_filename <- paste0(date, "_PitchingKPIReport.pdf")
-pdf(output_filename)
-grid.table(stats)
 
+
+pdf(output_filename, height = 8.5, width = 11)
+grid.table(stats)
+print(stats)
 dev.off()
