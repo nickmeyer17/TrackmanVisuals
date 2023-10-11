@@ -22,9 +22,9 @@ file <- paste0(date,"-", Cluster_FieldName,"-Private-1_unverified.csv")
 df <- read.csv(file)
 str(df)
 
-df <- df %>% mutate(PAofGame = cumsum(PAofInning))
-
 df <- filter(df, PitcherTeam %in% c("DAY_FLY"))
+df$PAofGame <- paste0(df$Inning, ".", df$PAofInning)
+
 df <- df %>% mutate(is_strike = ifelse(PitchCall %in% c("StrikeCalled", "InPlay", "StrikeSwinging", "FoulBall"), 1, 0))
 df <- df %>% mutate(strike_count = Strikes + is_strike)
 first_pitch <- filter(df, PitchofPA == 1)
@@ -36,32 +36,34 @@ stats <- merge(strike_per, first_pitch, by = "Pitcher")
 
 
 first_three <- filter(df, PitchofPA == 3)
-first_three <- first_three %>% mutate(success = ifelse(strike_count == 2, TRUE, FALSE))
+str(first_three)
+first_three <- first_three %>% mutate(success = ifelse(strike_count >= 2, TRUE, FALSE))
+
+
 
 first_three_success <- first_three %>% group_by(Pitcher) %>% summarize(first_three_success = round(mean(success, na.rm = TRUE)*100, 1))
 stats <- merge(stats, first_three_success, by = "Pitcher")
-str(stats)
-df <- df %>% mutate(in_play = ifelse(PitchCall %in% c("InPlay") | KorBB %in% c("Walk", "Strikeout"), TRUE, FALSE))
-action_play <- filter(df, in_play %in% c("TRUE"))
 
-df <- action_play %>% mutate(on_base = ifelse(PlayResult %in% c("Single", "Double", "Triple", "HomeRun")| KorBB %in% c("Walk")| PitchCall %in% c("HitByPitch"), TRUE, FALSE))
-df <- df %>% select(Pitcher, PAofGame, on_base)
+df <- df %>% mutate(in_play = ifelse(PitchCall %in% c("InPlay", "HitByPitch") | KorBB %in% c("Walk", "Strikeout"), TRUE, FALSE))
+action_pitch <- filter(df, in_play %in% c("TRUE"))
 
-success_first_three <- (first_three, success %in% c("TRUE"))
+action <- action_pitch %>% mutate(on_base = ifelse(PlayResult %in% c("Single", "Double", "Triple", "HomeRun")| KorBB %in% c("Walk")| PitchCall %in% c("HitByPitch"), TRUE, FALSE))
+action <- filter(action, PitchofPA >= 3)
+action <- action %>% select(Pitcher, PAofGame, on_base)
 
-df <- df %>% select(Pitcher, PAofGame, )
-f3 <- success_first_three %>% select(Pitcher, PAofGame)
+f3 <- first_three %>% select(Pitcher, PAofGame, success)
+str(action)
+str(f3)
+data <- merge(action, f3, by = c("Pitcher", "PAofGame"))
+str(data)
 
-if(df$PAofGame == f3$PAofGame){
-    sf <- merge(df, f3, by = "Pitcher", "PAofGame")
-}
+data <- filter(data, success %in% c("TRUE"))
 
-
-#f3_obp <- sf %>% group_by(Pitcher) %>% summarize(
+f3_obp <- data %>% group_by(Pitcher) %>% summarize(
     obp_w_succesful_first_three = round(mean(on_base, na.rm = TRUE), 3)
-#)
+)
 
-#stats <- merge(stats, f3_obp, by = "Pitcher")
+stats <- merge(stats, f3_obp, by = "Pitcher")
 
 output_filename <- paste0(date, "_PitchingKPIReport.pdf")
 pdf(output_filename)
