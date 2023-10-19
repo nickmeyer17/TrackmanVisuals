@@ -30,9 +30,9 @@ previous_date <- current_date - 1
 
 # Format the previous date as YYYYMMDD
 
-date <- 20231003
+date <- 20231012
 #date <- format(previous_date, "%Y%m%d")
-field <- paste0("-", Cluster_FieldName,"-Private-1_unverified.csv")
+field <- paste0("-", Cluster_FieldName,"-Private-2_unverified.csv")
 file <- paste0(date, field)
 df <- read.csv(file)
 str(df)
@@ -55,10 +55,18 @@ df <- df %>% mutate(true_strike = ifelse((min_plate_x - 0.25) <= PlateLocSide &
 df <- df %>% mutate(correct_strike = ifelse(true_strike == "TRUE" & PitchCall %in% c("StrikeCalled"), TRUE, FALSE))
 df <- df %>% mutate(correct_ball = ifelse(true_strike == "FALSE" & PitchCall %in% c("BallCalled"), TRUE, FALSE))
 
-stats <- df %>% summarise(
-        Correct_Stike_Percent = round(mean(correct_strike, na.rm = TRUE)*100, 2),
-        Correct_Ball_Percent = round(mean(correct_ball, na.rm = TRUE)*100, 2)
+strikes <- filter(df, PitchCall %in% c("StrikeCalled"))
+balls <- filter(df, PitchCall %in% c("BallCalled"))
+
+stats <- strikes %>% summarise(
+        Correct_Stike_Percent = round(mean(correct_strike, na.rm = TRUE)*100, 2)
     )
+
+ball_call <- balls %>% summarise(
+        Correct_Ball_Percent = round(mean(correct_ball, na.rm = TRUE)*100, 2)
+)
+
+stats <- merge(stats, ball_call)
 
 plot1 <- ggplot(df, aes(x = -1 *PlateLocSide, y = PlateLocHeight, color = PitchCall))+geom_point()+
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = max_plate_z, yend = max_plate_z), color = "black")+
@@ -73,7 +81,7 @@ plot1 <- ggplot(df, aes(x = -1 *PlateLocSide, y = PlateLocHeight, color = PitchC
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = "Game Total Calls, (Umpire View)")+
     xlim(-3, 3)+
-    ylim(-1, 6)
+    ylim(-1, 6) + xlab(" ")+ ylab(" ")
 
 output_filename <- paste0(date, "_UmpireReport.pdf")
 pdf(output_filename)
@@ -95,7 +103,7 @@ for(team in unique(df$BatterTeam)){
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat, (Umpire View)"))+
     xlim(-3, 3)+
-    ylim(-1, 6)+coord_fixed(ratio = 1)
+    ylim(-1, 6)+coord_fixed(ratio = 1) + xlab(" ")+ ylab(" ")
 
  print(plot2)
 
@@ -114,7 +122,7 @@ for(team in unique(df$BatterTeam)){
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat,", batter_hand, "Handed Hitters, (Umpire View)"))+
     xlim(-3, 3)+
-    ylim(-1, 6)+coord_fixed(ratio = 1)
+    ylim(-1, 6)+coord_fixed(ratio = 1)+ xlab(" ")+ ylab(" ")
 
  print(plot3)
 
@@ -136,7 +144,7 @@ for(team in unique(df$BatterTeam)){
  labs(title = paste("Calls with", team, "at Bat,", pitcher_hand, "Handed Pitchers", pitch_type, "(Umpire View)"))+
     xlim(-3, 3)+
     ylim(-1, 6)+
-    coord_fixed(ratio = 1)
+    coord_fixed(ratio = 1)+ xlab(" ") + ylab(" ")
 
  print(plot4)
 

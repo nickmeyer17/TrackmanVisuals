@@ -21,7 +21,7 @@ previous_date <- current_date - 1
 date <- format(previous_date, "%Y%m%d")
 #date <- 20231008 #Use if not running for previous date
 
-file <- paste0(date,"-", Cluster_FieldName,"-Private-1_unverified.csv")
+file <- paste0(date,"-", Cluster_FieldName,"-Private-2_unverified.csv")
 df <- read.csv(file)
 str(df)
 
