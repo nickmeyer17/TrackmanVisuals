@@ -9,13 +9,15 @@ library(grid)
 library(gridExtra)
 library(googlesheets4)
 library(googledrive)
+library(png)
+
 
 Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
 Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 Cluster_UmpireDrive_API_Path <- Sys.getenv("Cluster_UmpireDrive_API_Path")
 #Set Working Directory to Local, This is where the output .pdf will save to
 setwd(Cluster_LocalDirectory)
-
+image <- readPNG(DaytonLogo.png)
 # Configure the OAuth client
 #drive_auth_configure(client_id = client_id, client_secret = client_secret)
 
@@ -73,15 +75,22 @@ plot1 <- ggplot(df, aes(x = -1 *PlateLocSide, y = PlateLocHeight, color = PitchC
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
- geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black", size = 1)+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black", size = 1)+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = "Game Total Calls, (Umpire View)")+
     xlim(-3, 3)+
-    ylim(-1, 6) + xlab(" ")+ ylab(" ")
+    ylim(-1, 6) + xlab(" ")+ ylab(" ")+
+    theme_minimal() +  # Start with a minimal theme
+  theme(
+    panel.background = element_rect(fill = "white"),  # Set the background color to white
+    panel.grid.major = element_line(color = "lightgrey"),  # Set major grid lines to light grey
+    panel.grid.minor = element_blank()  # Remove minor grid lines
+  )
+
 
 output_filename <- paste0(date, "_UmpireReport.pdf")
 pdf(output_filename)
@@ -95,15 +104,21 @@ for(team in unique(df$BatterTeam)){
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
- geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black", size = 1)+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black", size = 1)+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat, (Umpire View)"))+
     xlim(-3, 3)+
-    ylim(-1, 6)+coord_fixed(ratio = 1) + xlab(" ")+ ylab(" ")
+    ylim(-1, 6)+coord_fixed(ratio = 1) + xlab(" ")+ ylab(" ")+
+     theme_minimal() +  # Start with a minimal theme
+  theme(
+    panel.background = element_rect(fill = "white"),  # Set the background color to white
+    panel.grid.major = element_line(color = "lightgrey"),  # Set major grid lines to light grey
+    panel.grid.minor = element_blank()  # Remove minor grid lines
+  )
 
  print(plot2)
 
@@ -114,15 +129,22 @@ for(team in unique(df$BatterTeam)){
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
- geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black", size = 1)+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black", size = 1)+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat,", batter_hand, "Handed Hitters, (Umpire View)"))+
     xlim(-3, 3)+
-    ylim(-1, 6)+coord_fixed(ratio = 1)+ xlab(" ")+ ylab(" ")
+    ylim(-1, 6)+coord_fixed(ratio = 1)+ xlab(" ")+ ylab(" ")+
+      theme_minimal() +  # Start with a minimal theme
+  theme(
+    panel.background = element_rect(fill = "white"),  # Set the background color to white
+    panel.grid.major = element_line(color = "lightgrey"),  # Set major grid lines to light grey
+    panel.grid.minor = element_blank()  # Remove minor grid lines
+  )
+
 
  print(plot3)
 
@@ -135,16 +157,23 @@ for(team in unique(df$BatterTeam)){
  geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = min_plate_z, yend = min_plate_z), color = "black")+
  geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
  geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = min_plate_z, yend = max_plate_z), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black")+
- geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black")+
- geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black")+
+ geom_segment(aes(x = min_plate_x, xend = max_plate_x, y = 0.25, yend = 0.25), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = min_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = max_plate_x, xend = max_plate_x, y = 0.25, yend = 0), color = "black", size = 1)+
+ geom_segment(aes(x = min_plate_x, xend = 0, y = 0, yend = -0.25), color = "black", size = 1)+
+ geom_segment(aes(x = 0, xend = max_plate_x, y = -0.25, yend = 0), color = "black", size = 1)+
  scale_color_manual(values = c("BallCalled" = "blue", "StrikeCalled" = "red"))+
  labs(title = paste("Calls with", team, "at Bat,", pitcher_hand, "Handed Pitchers", pitch_type, "(Umpire View)"))+
     xlim(-3, 3)+
     ylim(-1, 6)+
-    coord_fixed(ratio = 1)+ xlab(" ") + ylab(" ")
+    coord_fixed(ratio = 1)+ xlab(" ") + ylab(" ")+
+     theme_minimal() +  # Start with a minimal theme
+  theme(
+    panel.background = element_rect(fill = "white"),  # Set the background color to white
+    panel.grid.major = element_line(color = "lightgrey"),  # Set major grid lines to light grey
+    panel.grid.minor = element_blank()  # Remove minor grid lines
+  )
+
 
  print(plot4)
 
