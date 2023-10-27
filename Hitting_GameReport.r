@@ -14,8 +14,8 @@ Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
 Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 
 setwd(Cluster_LocalDirectory)
-date <- 20230923
-field <- paste0("-", Cluster_FieldName,"-Private-1_unverified.csv")
+date <- 20230212
+field <- paste0("-", Cluster_FieldName,"-BP-1_unverified.csv")
 file <- paste0(date, field)
 df <- read.csv(file)
 str(df)
@@ -42,7 +42,7 @@ curve_data <- data.frame(x = x, y = y)
 
 #Filter data to swings
 #df <- filter(df, BatterTeam %in% c(<TEAM>))
-df <- filter(df, PitchCall %in% c("StrikeSwinging", "Foul", "InPlay"))
+#df <- filter(df, PitchCall %in% c("StrikeSwinging", "Foul", "InPlay"))
 df <- df %>% mutate(angle = (Bearing + 45)*(pi/180))
 df <- df %>% mutate(ypos = Distance*cos(angle), xpos = Distance*sin(angle))
 

@@ -16,8 +16,8 @@ library(googledrive)
 Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
 Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 directory <- setwd(Cluster_LocalDirectory)
-date <- 20230923
-file <- paste0(date,"-", Cluster_FieldName,"-Private-1_unverified.csv")
+date <- 20230212
+file <- paste0(date,"-", Cluster_FieldName,"-Private-3_unverified.csv")
 df <- read.csv(file)
 str(df)
 

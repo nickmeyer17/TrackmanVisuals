@@ -10,6 +10,7 @@ library(gridExtra)
 library(googlesheets4)
 library(googledrive)
 library(png)
+library(MASS)
 
 
 Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
@@ -47,6 +48,7 @@ min_plate_z <- 1.17
 
 df <- filter(df, PitchCall %in% c("BallCalled", "StrikeCalled"))
 
+
 df <- df %>% mutate(true_strike = ifelse((min_plate_x - 0.25) <= PlateLocSide &
                               (max_plate_x + 0.25) >= PlateLocSide &
                               (min_plate_z - 0.25) <= PlateLocHeight &
@@ -59,6 +61,21 @@ df <- df %>% mutate(correct_ball = ifelse(true_strike == "FALSE" & PitchCall %in
 
 strikes <- filter(df, PitchCall %in% c("StrikeCalled"))
 balls <- filter(df, PitchCall %in% c("BallCalled"))
+
+n <- nrow(strikes)
+h_x <- 1.06*sd(strikes$PlateLocSide)*n^(-1/5)
+h_y <- 1.06*sd(strikes$PlateLocHeight)*n^(-1/5)
+
+# Create a 2D kernel density estimate
+kde <- kde2d(strikes$PlateLocSide, strikes$PlateLocHeight, n = 100, lims = c(range(strikes$PlateLocSide), range(strikes$PlateLocHeight)), h = c(h_x, h_y))
+
+# Create a contour plot
+#contour(kde, xlab = "X-coordinate", ylab = "Y-coordinate", main = "2D Kernel Density Estimation for 'StrikeCalled' Pitches")
+
+# You can also add a heatmap for better visualization
+#image(kde, xlab = "X-coordinate", ylab = "Y-coordinate", main = "2D Kernel Density Estimation for 'StrikeCalled' Pitches", col = terrain.colors(50))
+
+
 
 stats <- strikes %>% summarise(
         Correct_Stike_Percent = round(mean(correct_strike, na.rm = TRUE)*100, 2)
@@ -91,6 +108,15 @@ plot1 <- ggplot(df, aes(x = -1 *PlateLocSide, y = PlateLocHeight, color = PitchC
     panel.grid.minor = element_blank()  # Remove minor grid lines
   )
 
+plot1 <- plot1 + geom_density_2d(data = subset(df, PitchCall == "StrikeCalled"), aes(x = PlateLocSide, y = PlateLocHeight), h = c(h_x, h_y), fill = "red")+
+geom_contour(
+  data = subset(baseball_data, PitchCall == "StrikeCalled"),
+  aes(x = PlateLocSide, y = PlateLocHeight, z = stat(level)),  # Use stat(level) to specify the contour levels
+  breaks = 0.5,  # Set the probability level to 0.5
+  color = "red",  # Color for contour lines
+  size = 1  # Adjust the size of contour lines
+)+ scale_fill_identity()
+plot1
 
 output_filename <- paste0(date, "_UmpireReport.pdf")
 pdf(output_filename)
@@ -188,7 +214,7 @@ pdf_path <- paste0(Cluster_LocalDirectory,"/", output_filename)
 file_path <- pdf_path
 
 # Create a new folder or specify an existing folder in Google Drive where you want to upload the PDF
-folder_id <- "Umpire Reports"
+#folder_id <- "Umpire Reports"
 
 # Upload the PDF file to Google Drive
-drive_upload(media = file_path, name = output_filename, path = "Trackman_Reports/Umpire_Reports")
+#drive_upload(media = file_path, name = output_filename, path = "Trackman_Reports/Umpire_Reports")
