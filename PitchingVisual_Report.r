@@ -1,4 +1,3 @@
-
 library(knitr)
 library(kableExtra)
 library(tidyverse)
@@ -10,14 +9,11 @@ library(grid)
 library(gridExtra)
 library(googledrive)
 
-
-
-
 Cluster_LocalDirectory <- Sys.getenv("Cluster_LocalDirectory")
 Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 directory <- setwd(Cluster_LocalDirectory)
-date <- 20230212
-file <- paste0(date,"-", Cluster_FieldName,"-Private-3_unverified.csv")
+date <- 20230923
+file <- paste0(date,"-", Cluster_FieldName,"-Private-1_unverified.csv")
 df <- read.csv(file)
 str(df)
 
@@ -27,14 +23,9 @@ max_plate_x <- 0.83
 max_plate_z <- 3.92
 min_plate_z <- 1.17
 
-
-
-
 df <- df %>%
   mutate(is_strike = ifelse(PitchCall %in% c("StrikeCalled", "InPlay", "StrikeSwinging", "FoulBall"), TRUE, FALSE),
   whiff = ifelse(PitchCall %in% c("StrikeSwinging"), TRUE, FALSE))
-
-
 
 df <- df %>% mutate(
     HB = c(HorzBreak),
@@ -105,7 +96,31 @@ name_split <- strsplit(filtered_data$Pitcher, ", ")
 
 # Combine the "First" and "Last" components in the desired order (FirstLast)
 name <- sapply(name_split, function(name) paste(rev(name), collapse = ""))
+pdf(pdf_file, height = 8.5, width = 11)
 
+# Define the grid layout
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(2, 2, widths = c(1, 1), heights = c(1, 1))))
+
+# Draw the plots and stats in the layout
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+grid.draw(plot1)
+popViewport()
+
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+grid.draw(plot2)
+popViewport()
+
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
+grid.draw(plot3)
+popViewport()
+
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
+grid.table(stats)
+popViewport()
+
+# Close the PDF device
+dev.off()
   # Create a PDF file for the current PitcherId
   pdf_file <- paste0(date, "_", name, "_pitchingreport.pdf")
   pdf(pdf_file, height = 8.5, width = 11)

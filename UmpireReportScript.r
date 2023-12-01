@@ -18,7 +18,7 @@ Cluster_FieldName <- Sys.getenv("Cluster_FieldName")
 Cluster_UmpireDrive_API_Path <- Sys.getenv("Cluster_UmpireDrive_API_Path")
 #Set Working Directory to Local, This is where the output .pdf will save to
 setwd(Cluster_LocalDirectory)
-image <- readPNG(DaytonLogo.png)
+image <- readPNG("DaytonLogo.png")
 # Configure the OAuth client
 #drive_auth_configure(client_id = client_id, client_secret = client_secret)
 
